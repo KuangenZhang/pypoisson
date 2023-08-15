@@ -4,4 +4,5 @@
 .ply
 .xyz
 /build
-.egg-info
+*.egg-info/*
+*.egg

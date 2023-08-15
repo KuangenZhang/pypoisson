@@ -16,7 +16,7 @@ for C++ GNU Compilation [PoissonRecon_v6_13](https://github.com/mmolero/PoissonR
 ## Installation 
 
 ```bash
-$ git clone --recursive git://github.com/mmolero/pypoisson.git
+$ git clone https://github.com/KuangenZhang/pypoisson
 $ cd pypoisson
 $ python setup.py build
 $ python setup.py install
