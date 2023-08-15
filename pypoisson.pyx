@@ -16,7 +16,7 @@ cdef extern from "PoissonRecon_v6_13/src/PoissonReconLib.h":
     cdef vector[double] mem_data
 
 def poisson_reconstruction(points, normals, depth=8, full_depth=5, scale=1.1,
-                           samples_per_node=1.0, cg_depth=0.0,
+                           samples_per_node=1.0, point_weight=4.0, cg_depth=0.0,
                            enable_polygon_mesh=False, enable_density=False,
                            nthreads=0, verbose=False):
 
@@ -68,6 +68,12 @@ def poisson_reconstruction(points, normals, depth=8, full_depth=5, scale=1.1,
         For more noisy samples, larger values in the range [15.0 - 20.0] may be needed to provide a smoother, noise-reduced, reconstruction.
         The default value is 1.0.
 
+    point_weight: float
+
+        This floating point value specifies the importants that interpolation of the point samples is given in the formulation of the screened Poisson equation.
+        The results of the original (unscreened) Poisson Reconstruction can be obtained by setting this value to 0.
+        The default value for this parameter is 4.
+
     cg_depth: Integer
 
         This integer is the depth up to which a conjugate-gradients solver will be used to solve the linear system.
@@ -108,7 +114,7 @@ def poisson_reconstruction(points, normals, depth=8, full_depth=5, scale=1.1,
     return _poisson_reconstruction(np.ascontiguousarray(np.float64(points)),
                                    np.ascontiguousarray(np.float64(normals)),
                                    depth, full_depth, scale, samples_per_node,
-                                   cg_depth, enable_polygon_mesh,
+                                   point_weight, cg_depth, enable_polygon_mesh,
                                    enable_density, nthreads, verbose)
 
 
@@ -119,6 +125,7 @@ cdef _poisson_reconstruction(np.float64_t[:, ::1] points,
                              int full_depth=5,
                              double scale=1.10,
                              double samples_per_node=1.0,
+                             double point_weight=4.0,
                              double cg_depth=0.0,
                              bool enable_polygon_mesh=False,
                              bool enable_density=False,
@@ -131,6 +138,7 @@ cdef _poisson_reconstruction(np.float64_t[:, ::1] points,
         string arg_full_depth = str(full_depth).encode()
         string arg_scale = str(scale).encode()
         string arg_samples_per_node = str(samples_per_node).encode()
+        string arg_point_weight = str(point_weight).encode()
         string arg_cg_depth = str(cg_depth).encode()
         string arg_nthreads = str(nthreads).encode()
 
@@ -153,6 +161,7 @@ cdef _poisson_reconstruction(np.float64_t[:, ::1] points,
     args = [b"PoissonRecon", b"--in", b"none", b"--out", b"none", b"--depth", arg_depth.c_str(),
                             b"--fullDepth",    arg_full_depth.c_str(), b"--scale",   arg_scale.c_str(),
                             b"--samplesPerNode",  arg_samples_per_node.c_str(),
+                            b"--pointWeight", arg_point_weight.c_str(),
                             b"--cgDepth", arg_cg_depth.c_str()]
 
     if verbose == True:
