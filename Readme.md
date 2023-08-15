@@ -1,5 +1,9 @@
 
-# Poisson Surface Reconstruction Python Binding 
+# Screened Poisson Surface Reconstruction Python Binding 
+
+This repo is forked from [pypoisson
+](https://github.com/mmolero/pypoisson) and added pointWeight, which specifies the importantance of the interpolation of the point samples is given in the formulation of the screened Poisson equation.
+The results of the original (unscreened) Poisson Reconstruction can be obtained by setting this value to 0.
 
 Poisson Surface Reconstruction v6.13 
 
